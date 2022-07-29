@@ -103,6 +103,7 @@ public class MiscServiceImpl implements MiscService {
 
         if (existingBook != null) {
             bookRepository.delete(existingBook);
+            logger.info("Deleted book with ISDN: " + isbn);
         }
     }
 
