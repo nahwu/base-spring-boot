@@ -13,8 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import javax.validation.constraints.Min;
 import java.util.*;
@@ -36,74 +37,71 @@ public class MiscServiceImpl implements MiscService {
     private BookAuthorRepository bookAuthorRepository;
 
     @Override
-    public Book addBook(Book newBook) {
+    public ResponseEntity<?> addBook(Book newBook) {
         Book existingBook = bookRepository.findByIsbn(newBook.getIsbn());
         if (existingBook == null) {
             authorRepository.saveAll(newBook.getAuthors());
-
-            /*
-            Set<BookAuthors> bookAuthorList = newBook.getBookAuthorsMapping();
-            for (BookAuthors currentBookAuthor : bookAuthorList) {
-                authorRepository.save(currentBookAuthor.getAuthor());
-            }
-            */
-
-            return bookRepository.save(newBook);
+            return new ResponseEntity<>(bookRepository.save(newBook), HttpStatus.CREATED);
         } else {
-            //throw new ConflictException("Unable to find Book. Update book operation failed.");
-            return null;
+            logger.warn("Unable to create Book due to existing book with the same ISBN.");
+            return new ResponseEntity<>("Unable to create Book due to existing book with the same ISBN.", HttpStatus.CONFLICT);
         }
     }
 
     @Override
-    public Book updateBook(BookDTO requestedChangesBook) {
+    public ResponseEntity<?> updateBook(BookDTO requestedChangesBook) {
         Book existingBook = bookRepository.findByIsbn(requestedChangesBook.getIsbn());
 
         if (existingBook != null) {
-            //Book toBeUpdatedBook = new Book();
             authorRepository.saveAll(requestedChangesBook.getAuthors());
             BeanUtils.copyProperties(requestedChangesBook, existingBook);
-            existingBook.setAuthors(new HashSet<Author>(requestedChangesBook.getAuthors()));
-            return bookRepository.save(existingBook);
+            existingBook.setAuthors(new HashSet<>(requestedChangesBook.getAuthors()));
+            return new ResponseEntity<>(bookRepository.save(existingBook), HttpStatus.OK);
         } else {
-            throw new NotFoundException("Unable to find Book. Update book operation failed.");
+            logger.warn("Unable to find Book with the provided ISBN.");
+            return new ResponseEntity<>("Unable to find Book with the provided ISBN.", HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public List<BookDTO> findByTitle(String title) {
+    public ResponseEntity<?> findByTitle(String title) {
         List<BookDTO> retrievedBookList = bookRepository.findByTitle(title);
-        if (retrievedBookList != null) {
+        if (retrievedBookList != null && !retrievedBookList.isEmpty()) {
             for (BookDTO bookItem : retrievedBookList) {
                 bookItem.setAuthors(bookAuthorRepository.findAllAuthorsByIsbn(bookItem.getIsbn()));
             }
-            return retrievedBookList;
+            return new ResponseEntity<>(retrievedBookList, HttpStatus.OK);
         } else {
-            throw new NotFoundException("Unable to find Book with the provided title.");
+            logger.warn("Unable to find Book with the provided title.");
+            return new ResponseEntity<>("Unable to find Book with the provided title.", HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public List<BookDTO> findByAuthors(String authorName) {
+    public ResponseEntity<?> findByAuthors(String authorName) {
         List<BookDTO> retrievedBookList = bookAuthorRepository.findAuthorBooksByAuthorName(authorName);
 
-        if (retrievedBookList != null) {
+        if (retrievedBookList != null && !retrievedBookList.isEmpty()) {
             for (BookDTO bookItem : retrievedBookList) {
                 bookItem.setAuthors(bookAuthorRepository.findAllAuthorsByIsbn(bookItem.getIsbn()));
             }
-            return retrievedBookList;
+            return new ResponseEntity<>(retrievedBookList, HttpStatus.OK);
         } else {
-            throw new NotFoundException("Unable to find Book with the provided author.");
+            logger.warn("Unable to find Book with the provided title.");
+            return new ResponseEntity<>("Unable to find Book with the provided author.", HttpStatus.NOT_FOUND);
         }
     }
 
     @Override
-    public void deleteByIsbn(String isbn) {
+    public ResponseEntity<?> deleteByIsbn(String isbn) {
         Book existingBook = bookRepository.findByIsbn(isbn);
-
         if (existingBook != null) {
             bookRepository.delete(existingBook);
             logger.info("Deleted book with ISDN: " + isbn);
+            return new ResponseEntity<>("Deleted book with ISDN: " + isbn, HttpStatus.OK);
+        } else {
+            logger.warn("Unable to find Book with the provided ISBN.");
+            return new ResponseEntity<>("Unable to find Book with the provided ISBN.", HttpStatus.NOT_FOUND);
         }
     }
 

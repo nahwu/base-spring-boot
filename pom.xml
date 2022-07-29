@@ -60,17 +60,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- spring security -->
 		<dependency>
-			<groupId>com.datastax.cassandra</groupId>
-			<artifactId>cassandra-driver-core</artifactId>
-			<version>3.7.2</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		<!-- NOTE: cassandra-driver-core 3.6.0 depends on dropwizard version 3.2.2. Version 4.0.3 includes a breaking change which causes class not found errors.-->
-		<dependency>
-			<groupId>io.dropwizard.metrics</groupId>
-			<artifactId>metrics-core</artifactId>
-			<version>3.2.6</version>
-		</dependency>
+
 
 	</dependencies>
 

@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-
 public interface BookAuthorRepository  extends JpaRepository<BookAuthors, String>, JpaSpecificationExecutor<BookAuthors>  {
 
     @Query(value = "SELECT new com.nahwu.base.entity.Author(a.authorId, a.name, a.birthday) " +
@@ -27,7 +26,5 @@ public interface BookAuthorRepository  extends JpaRepository<BookAuthors, String
             " ON b.isbn = ba.book.isbn " +
             " WHERE a.name = :authorName ")
     List<BookDTO> findAuthorBooksByAuthorName(String authorName);
-
-
 
 }
