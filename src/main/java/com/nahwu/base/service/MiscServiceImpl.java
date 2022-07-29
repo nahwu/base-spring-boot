@@ -37,7 +37,7 @@ public class MiscServiceImpl implements MiscService {
 
     @Override
     public Book addBook(Book newBook) {
-        BookDTO existingBook = bookRepository.findByIsbn(newBook.getIsbn());
+        Book existingBook = bookRepository.findByIsbn(newBook.getIsbn());
         if (existingBook == null) {
             authorRepository.saveAll(newBook.getAuthors());
 
@@ -57,13 +57,14 @@ public class MiscServiceImpl implements MiscService {
 
     @Override
     public Book updateBook(BookDTO requestedChangesBook) {
-        BookDTO existingBook = bookRepository.findByIsbn(requestedChangesBook.getIsbn());
+        Book existingBook = bookRepository.findByIsbn(requestedChangesBook.getIsbn());
 
         if (existingBook != null) {
-            Book toBeUpdatedBook = new Book();
+            //Book toBeUpdatedBook = new Book();
             authorRepository.saveAll(requestedChangesBook.getAuthors());
-            BeanUtils.copyProperties(requestedChangesBook, toBeUpdatedBook);
-            return bookRepository.save(toBeUpdatedBook);
+            BeanUtils.copyProperties(requestedChangesBook, existingBook);
+            existingBook.setAuthors(new HashSet<Author>(requestedChangesBook.getAuthors()));
+            return bookRepository.save(existingBook);
         } else {
             throw new NotFoundException("Unable to find Book. Update book operation failed.");
         }
@@ -84,7 +85,7 @@ public class MiscServiceImpl implements MiscService {
 
     @Override
     public List<BookDTO> findByAuthors(String authorName) {
-        List<BookDTO> retrievedBookList =  bookAuthorRepository.findAuthorBooksByAuthorName(authorName);
+        List<BookDTO> retrievedBookList = bookAuthorRepository.findAuthorBooksByAuthorName(authorName);
 
         if (retrievedBookList != null) {
             for (BookDTO bookItem : retrievedBookList) {
@@ -97,8 +98,12 @@ public class MiscServiceImpl implements MiscService {
     }
 
     @Override
-    public Book deleteByIsbn(String isbn) {
-        return null;
+    public void deleteByIsbn(String isbn) {
+        Book existingBook = bookRepository.findByIsbn(isbn);
+
+        if (existingBook != null) {
+            bookRepository.delete(existingBook);
+        }
     }
 
     @Override

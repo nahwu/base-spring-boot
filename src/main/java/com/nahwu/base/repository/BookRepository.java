@@ -16,10 +16,13 @@ public interface BookRepository extends JpaRepository<Book, String>, JpaSpecific
             " WHERE title = ?1 ")
     List<BookDTO> findByTitle(String title);
 
+    /*
     @Query(value = " SELECT new com.nahwu.base.entity.BookDTO(isbn)" +
             " FROM Book " +
             " WHERE isbn = ?1 ")
     BookDTO findByIsbn(String isbn);
+*/
+    Book findByIsbn(String isbn);
 
     Book deleteByIsbn(String isbn);
 }

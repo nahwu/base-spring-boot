@@ -47,10 +47,9 @@ public class BookController {
         return miscService.findByAuthors(author);
     }
 
-    @Transactional
     @DeleteMapping("/v1/books/isbn/{isbn}")
-    public Book deleteByIsbn(@PathVariable String isbn) {
-        return miscService.deleteByIsbn(isbn);
+    public void deleteByIsbn(@PathVariable String isbn) {
+         miscService.deleteByIsbn(isbn);
     }
 
     @GetMapping("/v1/books")

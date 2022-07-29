@@ -17,7 +17,7 @@ public interface MiscService {
 
     List<BookDTO> findByAuthors(String author);
 
-    Book deleteByIsbn(String isbn);
+    void deleteByIsbn(String isbn);
 
     Page<Book> getPagedListOfBooks(String isbn, String title, String author, @Min(1) Integer pageNumber, @Min(1) Integer pageSize, Book.OrderBy orderByRequest, Sort.Direction orderByDirection);
 
