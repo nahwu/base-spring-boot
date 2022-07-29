@@ -81,17 +81,4 @@ public class BookController {
         return miscService.deleteByIsbn(isbn);
     }
 
-    @GetMapping("/v1/books")
-    @Operation(summary = "List all books (with search filters & pagination)")
-    public Page<Book> getAllBooks(
-            @RequestParam(value = "isbn", required = false) String isbn,
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "author", required = false) String author,
-            @RequestParam(value = "pageNumber", required = false) @Valid @Min(1) Integer pageNumber,
-            @RequestParam(value = "pageSize", required = false) @Valid @Min(1) Integer pageSize,
-            @RequestParam(value = "orderBy", required = false) @Parameter(name = "Default: TITLE") Book.OrderBy orderByRequest,
-            @RequestParam(value = "orderByDirection", required = false) @Parameter(name = "Default: DESC") Sort.Direction orderByDirection) {
-        return miscService.getPagedListOfBooks(isbn, title, author, pageNumber, pageSize, orderByRequest, orderByDirection);
-    }
-
 }

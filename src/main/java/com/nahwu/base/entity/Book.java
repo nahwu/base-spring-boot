@@ -38,18 +38,4 @@ public class Book {
     @Column(name = "price")
     private double price;
 
-    public static enum OrderBy {
-        ISBN("isbn"),
-        TITLE("title");
-
-        private String fieldName;
-
-        private OrderBy(String fieldName) {
-            this.fieldName = fieldName;
-        }
-
-        public String getFieldName() {
-            return this.fieldName;
-        }
-    }
 }
