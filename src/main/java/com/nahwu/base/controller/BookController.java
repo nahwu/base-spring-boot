@@ -52,9 +52,9 @@ public class BookController {
     }
 
     @GetMapping("/v1/books/title/{title}")
-    @Operation(summary = "Search a book by its title")
+    @Operation(summary = "Search for book(s) by its title")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the book",
+            @ApiResponse(responseCode = "200", description = "Found the book(s)",
                     content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Book.class)))}),
             @ApiResponse(responseCode = "404", description = "Book not found",
@@ -64,9 +64,9 @@ public class BookController {
     }
 
     @GetMapping("/v1/books/author/{author}")
-    @Operation(summary = "Search a book by its author")
+    @Operation(summary = "Search for book(s) by its author")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the book",
+            @ApiResponse(responseCode = "200", description = "Found the book(s)",
                     content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = Book.class)))}),
             @ApiResponse(responseCode = "404", description = "Book not found",
