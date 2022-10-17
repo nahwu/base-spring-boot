@@ -1,0 +1,14 @@
+
+docker build -t nahwu2/base-springboot-app:0.0.1 .
+
+docker push nahwu2/base-springboot-app:0.0.1
+
+
+docker save nahwu2/base-springboot-app:0.0.1 | gzip > exported_base_springboot_app:0_0_1.tar.gz
+
+#docker rm -f base-springboot-app
+#docker image rmi nahwu2/base-springboot-app:0.0.1
+docker run --restart always --name base-springboot-app \
+        -p 8000:8001 \
+        -e SPRING_DATASOURCE_URL='jdbc:postgresql://172.31.7.215:5432/vap-db' \
+        -d nahwu2/base-springboot-app:0.0.1
