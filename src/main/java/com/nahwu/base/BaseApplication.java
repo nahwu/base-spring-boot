@@ -15,6 +15,6 @@ public class BaseApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BaseApplication.class, args);
-        logger.info("___Started up___");
+        logger.info("___ Main started up ___");
     }
 }
